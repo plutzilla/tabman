@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TabMan - Manage Your Tabs</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">TabMan</h1>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search tabs..." class="search-input">
+                <span class="search-icon">🔍</span>
+            </div>
+        </header>
+        
+        <div class="stats" style="display: none;">
+            <span id="tabCount" class="tab-count">0 tabs</span>
+        </div>
+        
+        <div class="tabs-container" id="tabsContainer">
+            <div class="loading">Loading tabs...</div>
+        </div>
+        
+        <footer class="footer">
+            <button id="closeAllDuplicates" class="action-btn">Close Duplicates</button>
+            <button id="groupByDomain" class="action-btn">Group by Domain</button>
+        </footer>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html> 

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TabMan Icon Generator</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .icon-container { 
+            margin: 20px 0; 
+            text-align: center;
+        }
+        .icon-preview {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .icon-preview h4 {
+            margin: 0 0 10px 0;
+            color: #495057;
+        }
+        canvas { 
+            border: 2px solid #dee2e6; 
+            border-radius: 4px;
+            display: block;
+            margin: 10px auto;
+        }
+        .download-btn { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            margin: 5px; 
+            cursor: pointer; 
+            border-radius: 6px;
+            font-weight: 500;
+            transition: transform 0.2s ease;
+        }
+        .download-btn:hover {
+            transform: translateY(-1px);
+        }
+        .download-all {
+            background: #28a745;
+            padding: 12px 30px;
+            font-size: 16px;
+            margin: 20px 10px;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TabMan Icon Generator</h1>
+        <p>Generate PNG icons for the TabMan Chrome extension from our SVG designs.</p>
+        
+        <div class="instructions">
+            <h3>Instructions:</h3>
+            <ol>
+                <li>Click "Generate All Icons" to create all PNG files</li>
+                <li>Download each icon by clicking the download buttons</li>
+                <li>Save them in the <code>icons/</code> folder of your extension</li>
+                <li>Reload the extension in Chrome</li>
+            </ol>
+        </div>
+        
+        <div class="icon-container">
+            <button class="download-btn download-all" onclick="generateAllIcons()">Generate All Icons</button>
+            
+            <div class="icon-preview">
+                <h4>16x16 (Toolbar)</h4>
+                <canvas id="icon16" width="16" height="16"></canvas>
+                <button class="download-btn" onclick="downloadIcon('icon16', 'icon16.png')">Download PNG</button>
+            </div>
+            
+            <div class="icon-preview">
+                <h4>32x32 (Extension Page)</h4>
+                <canvas id="icon32" width="32" height="32"></canvas>
+                <button class="download-btn" onclick="downloadIcon('icon32', 'icon32.png')">Download PNG</button>
+            </div>
+            
+            <div class="icon-preview">
+                <h4>48x48 (Extension Management)</h4>
+                <canvas id="icon48" width="48" height="48"></canvas>
+                <button class="download-btn" onclick="downloadIcon('icon48', 'icon48.png')">Download PNG</button>
+            </div>
+            
+            <div class="icon-preview">
+                <h4>128x128 (Web Store)</h4>
+                <canvas id="icon128" width="128" height="128"></canvas>
+                <button class="download-btn" onclick="downloadIcon('icon128', 'icon128.png')">Download PNG</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function drawTabManIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            const scale = size / 128; // Base design on 128x128 for best quality
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            
+            // Draw background with rounded corners
+            const cornerRadius = 24 * scale;
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.roundRect(0, 0, size, size, cornerRadius);
+            ctx.fill();
+            
+            // Draw tab shapes
+            const tabY = 24 * scale;
+            const tabHeight = 20 * scale;
+            
+            // Tab 1 (active)
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+            ctx.beginPath();
+            ctx.roundRect(16 * scale, tabY, 32 * scale, tabHeight, 4 * scale);
+            ctx.fill();
+            
+            // Tab 2
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+            ctx.beginPath();
+            ctx.roundRect(52 * scale, tabY, 32 * scale, tabHeight, 4 * scale);
+            ctx.fill();
+            
+            // Tab 3
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+            ctx.beginPath();
+            ctx.roundRect(88 * scale, tabY, 24 * scale, tabHeight, 4 * scale);
+            ctx.fill();
+            
+            // Active tab indicator
+            ctx.fillStyle = '#FBC02D';
+            ctx.fillRect(16 * scale, (tabY + tabHeight - 2.4 * scale), 32 * scale, 2.4 * scale);
+            
+            // Tab content area
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+            ctx.beginPath();
+            ctx.roundRect(16 * scale, 48 * scale, 96 * scale, 56 * scale, 8 * scale);
+            ctx.fill();
+            
+            // Organization lines (content representation)
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.beginPath();
+            ctx.roundRect(24 * scale, 64 * scale, 24 * scale, 4 * scale, 2 * scale);
+            ctx.fill();
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.beginPath();
+            ctx.roundRect(24 * scale, 76 * scale, 32 * scale, 4 * scale, 2 * scale);
+            ctx.fill();
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.beginPath();
+            ctx.roundRect(24 * scale, 88 * scale, 20 * scale, 4 * scale, 2 * scale);
+            ctx.fill();
+            
+            // Right side content
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.beginPath();
+            ctx.roundRect(72 * scale, 64 * scale, 28 * scale, 4 * scale, 2 * scale);
+            ctx.fill();
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.beginPath();
+            ctx.roundRect(72 * scale, 76 * scale, 16 * scale, 4 * scale, 2 * scale);
+            ctx.fill();
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.beginPath();
+            ctx.roundRect(72 * scale, 88 * scale, 32 * scale, 4 * scale, 2 * scale);
+            ctx.fill();
+            
+            // Group indicator (only for larger sizes)
+            if (size >= 32) {
+                ctx.fillStyle = 'rgba(251, 192, 45, 0.8)';
+                ctx.beginPath();
+                ctx.roundRect(20 * scale, 28 * scale, 3 * scale, 12 * scale, 1.5 * scale);
+                ctx.fill();
+            }
+            
+            // Search icon (only for 48+ sizes)
+            if (size >= 48) {
+                const searchX = 104 * scale;
+                const searchY = 32 * scale;
+                const searchRadius = 5 * scale;
+                
+                // Search circle background
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+                ctx.beginPath();
+                ctx.arc(searchX, searchY, 8 * scale, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Search circle
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.lineWidth = 1.5 * scale;
+                ctx.beginPath();
+                ctx.arc(searchX, searchY, searchRadius, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Search handle
+                ctx.beginPath();
+                ctx.moveTo(searchX + 3 * scale, searchY + 3 * scale);
+                ctx.lineTo(searchX + 6 * scale, searchY + 6 * scale);
+                ctx.stroke();
+            }
+        }
+        
+        // Polyfill for roundRect if not available
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+                this.closePath();
+            };
+        }
+        
+        function downloadIcon(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        function generateAllIcons() {
+            drawTabManIcon(document.getElementById('icon16'), 16);
+            drawTabManIcon(document.getElementById('icon32'), 32);
+            drawTabManIcon(document.getElementById('icon48'), 48);
+            drawTabManIcon(document.getElementById('icon128'), 128);
+        }
+        
+        // Generate all icons when page loads
+        window.onload = function() {
+            generateAllIcons();
+        };
+    </script>
+</body>
+</html> 
