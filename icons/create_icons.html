@@ -37,9 +37,10 @@
             border-radius: 4px;
             display: block;
             margin: 10px auto;
+            background: white;
         }
         .download-btn { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #E65100 0%, #FF6F00 100%);
             color: white; 
             border: none; 
             padding: 10px 20px; 
@@ -53,32 +54,38 @@
             transform: translateY(-1px);
         }
         .download-all {
-            background: #28a745;
+            background: #E65100;
             padding: 12px 30px;
             font-size: 16px;
             margin: 20px 10px;
         }
         .instructions {
-            background: #e3f2fd;
+            background: #fff3e0;
             padding: 20px;
             border-radius: 8px;
             margin: 20px 0;
-            border-left: 4px solid #2196f3;
+            border-left: 4px solid #E65100;
+        }
+        .svg-preview {
+            margin: 10px 0;
+            padding: 10px;
+            background: #fafafa;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>TabMan Icon Generator</h1>
-        <p>Generate PNG icons for the TabMan Chrome extension from our SVG designs.</p>
+        <p>Generate PNG icons from our Material Icons SVG designs.</p>
         
         <div class="instructions">
             <h3>Instructions:</h3>
             <ol>
-                <li>Click "Generate All Icons" to create all PNG files</li>
+                <li>Click "Generate All Icons" to create PNG versions from SVG files</li>
                 <li>Download each icon by clicking the download buttons</li>
-                <li>Save them in the <code>icons/</code> folder of your extension</li>
-                <li>Reload the extension in Chrome</li>
+                <li>Use these PNG files if needed for compatibility</li>
+                <li>The extension already uses the SVG files directly</li>
             </ol>
         </div>
         
@@ -87,24 +94,36 @@
             
             <div class="icon-preview">
                 <h4>16x16 (Toolbar)</h4>
+                <div class="svg-preview">
+                    <div id="svg16"></div>
+                </div>
                 <canvas id="icon16" width="16" height="16"></canvas>
                 <button class="download-btn" onclick="downloadIcon('icon16', 'icon16.png')">Download PNG</button>
             </div>
             
             <div class="icon-preview">
                 <h4>32x32 (Extension Page)</h4>
+                <div class="svg-preview">
+                    <div id="svg32"></div>
+                </div>
                 <canvas id="icon32" width="32" height="32"></canvas>
                 <button class="download-btn" onclick="downloadIcon('icon32', 'icon32.png')">Download PNG</button>
             </div>
             
             <div class="icon-preview">
                 <h4>48x48 (Extension Management)</h4>
+                <div class="svg-preview">
+                    <div id="svg48"></div>
+                </div>
                 <canvas id="icon48" width="48" height="48"></canvas>
                 <button class="download-btn" onclick="downloadIcon('icon48', 'icon48.png')">Download PNG</button>
             </div>
             
             <div class="icon-preview">
                 <h4>128x128 (Web Store)</h4>
+                <div class="svg-preview">
+                    <div id="svg128"></div>
+                </div>
                 <canvas id="icon128" width="128" height="128"></canvas>
                 <button class="download-btn" onclick="downloadIcon('icon128', 'icon128.png')">Download PNG</button>
             </div>
@@ -112,140 +131,63 @@
     </div>
 
     <script>
-        function drawTabManIcon(canvas, size) {
+        // SVG content for each size
+        const svgContent = {
+            16: `<svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#E65100"><path d="M320-240q-33 0-56.5-23.5T240-320v-480q0-33 23.5-56.5T320-880h480q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H320Zm0-80h480v-320H520v-160H320v480ZM160-80q-33 0-56.5-23.5T80-160v-560h80v560h560v80H160Zm160-720v480-480Z"/></svg>`,
+            32: `<svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="#E65100"><path d="M320-240q-33 0-56.5-23.5T240-320v-480q0-33 23.5-56.5T320-880h480q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H320Zm0-80h480v-320H520v-160H320v480ZM160-80q-33 0-56.5-23.5T80-160v-560h80v560h560v80H160Zm160-720v480-480Z"/></svg>`,
+            48: `<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#E65100"><path d="M320-240q-33 0-56.5-23.5T240-320v-480q0-33 23.5-56.5T320-880h480q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H320Zm0-80h480v-320H520v-160H320v480ZM160-80q-33 0-56.5-23.5T80-160v-560h80v560h560v80H160Zm160-720v480-480Z"/></svg>`,
+            128: `<svg xmlns="http://www.w3.org/2000/svg" height="128px" viewBox="0 -960 960 960" width="128px" fill="#E65100"><path d="M320-240q-33 0-56.5-23.5T240-320v-480q0-33 23.5-56.5T320-880h480q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H320Zm0-80h480v-320H520v-160H320v480ZM160-80q-33 0-56.5-23.5T80-160v-560h80v560h560v80H160Zm160-720v480-480Z"/></svg>`
+        };
+
+        function svgToPng(svgString, size, callback) {
+            const img = new Image();
+            const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            const scale = size / 128; // Base design on 128x128 for best quality
             
-            // Clear canvas
-            ctx.clearRect(0, 0, size, size);
+            canvas.width = size;
+            canvas.height = size;
             
-            // Background gradient
-            const gradient = ctx.createLinearGradient(0, 0, size, size);
-            gradient.addColorStop(0, '#667eea');
-            gradient.addColorStop(1, '#764ba2');
+            // Create blob URL from SVG string
+            const blob = new Blob([svgString], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
             
-            // Draw background with rounded corners
-            const cornerRadius = 24 * scale;
-            ctx.fillStyle = gradient;
-            ctx.beginPath();
-            ctx.roundRect(0, 0, size, size, cornerRadius);
-            ctx.fill();
-            
-            // Draw tab shapes
-            const tabY = 24 * scale;
-            const tabHeight = 20 * scale;
-            
-            // Tab 1 (active)
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-            ctx.beginPath();
-            ctx.roundRect(16 * scale, tabY, 32 * scale, tabHeight, 4 * scale);
-            ctx.fill();
-            
-            // Tab 2
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-            ctx.beginPath();
-            ctx.roundRect(52 * scale, tabY, 32 * scale, tabHeight, 4 * scale);
-            ctx.fill();
-            
-            // Tab 3
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
-            ctx.beginPath();
-            ctx.roundRect(88 * scale, tabY, 24 * scale, tabHeight, 4 * scale);
-            ctx.fill();
-            
-            // Active tab indicator
-            ctx.fillStyle = '#FBC02D';
-            ctx.fillRect(16 * scale, (tabY + tabHeight - 2.4 * scale), 32 * scale, 2.4 * scale);
-            
-            // Tab content area
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-            ctx.beginPath();
-            ctx.roundRect(16 * scale, 48 * scale, 96 * scale, 56 * scale, 8 * scale);
-            ctx.fill();
-            
-            // Organization lines (content representation)
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-            ctx.beginPath();
-            ctx.roundRect(24 * scale, 64 * scale, 24 * scale, 4 * scale, 2 * scale);
-            ctx.fill();
-            
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.beginPath();
-            ctx.roundRect(24 * scale, 76 * scale, 32 * scale, 4 * scale, 2 * scale);
-            ctx.fill();
-            
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-            ctx.beginPath();
-            ctx.roundRect(24 * scale, 88 * scale, 20 * scale, 4 * scale, 2 * scale);
-            ctx.fill();
-            
-            // Right side content
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.beginPath();
-            ctx.roundRect(72 * scale, 64 * scale, 28 * scale, 4 * scale, 2 * scale);
-            ctx.fill();
-            
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-            ctx.beginPath();
-            ctx.roundRect(72 * scale, 76 * scale, 16 * scale, 4 * scale, 2 * scale);
-            ctx.fill();
-            
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.beginPath();
-            ctx.roundRect(72 * scale, 88 * scale, 32 * scale, 4 * scale, 2 * scale);
-            ctx.fill();
-            
-            // Group indicator (only for larger sizes)
-            if (size >= 32) {
-                ctx.fillStyle = 'rgba(251, 192, 45, 0.8)';
-                ctx.beginPath();
-                ctx.roundRect(20 * scale, 28 * scale, 3 * scale, 12 * scale, 1.5 * scale);
-                ctx.fill();
-            }
-            
-            // Search icon (only for 48+ sizes)
-            if (size >= 48) {
-                const searchX = 104 * scale;
-                const searchY = 32 * scale;
-                const searchRadius = 5 * scale;
+            img.onload = function() {
+                // Clear canvas (transparent background)
+                ctx.clearRect(0, 0, size, size);
                 
-                // Search circle background
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-                ctx.beginPath();
-                ctx.arc(searchX, searchY, 8 * scale, 0, 2 * Math.PI);
-                ctx.fill();
+                // Draw the SVG image
+                ctx.drawImage(img, 0, 0, size, size);
                 
-                // Search circle
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-                ctx.lineWidth = 1.5 * scale;
-                ctx.beginPath();
-                ctx.arc(searchX, searchY, searchRadius, 0, 2 * Math.PI);
-                ctx.stroke();
+                // Clean up
+                URL.revokeObjectURL(url);
                 
-                // Search handle
-                ctx.beginPath();
-                ctx.moveTo(searchX + 3 * scale, searchY + 3 * scale);
-                ctx.lineTo(searchX + 6 * scale, searchY + 6 * scale);
-                ctx.stroke();
-            }
-        }
-        
-        // Polyfill for roundRect if not available
-        if (!CanvasRenderingContext2D.prototype.roundRect) {
-            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
-                this.moveTo(x + radius, y);
-                this.lineTo(x + width - radius, y);
-                this.quadraticCurveTo(x + width, y, x + width, y + radius);
-                this.lineTo(x + width, y + height - radius);
-                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-                this.lineTo(x + radius, y + height);
-                this.quadraticCurveTo(x, y + height, x, y + height - radius);
-                this.lineTo(x, y + radius);
-                this.quadraticCurveTo(x, y, x + radius, y);
-                this.closePath();
+                // Call callback with the canvas
+                callback(canvas);
             };
+            
+            img.onerror = function() {
+                console.error('Failed to load SVG for size:', size);
+                URL.revokeObjectURL(url);
+            };
+            
+            img.src = url;
         }
-        
+
+        function generateIcon(size) {
+            const targetCanvas = document.getElementById(`icon${size}`);
+            const svgPreview = document.getElementById(`svg${size}`);
+            
+            // Show SVG preview
+            svgPreview.innerHTML = svgContent[size];
+            
+            // Convert SVG to PNG
+            svgToPng(svgContent[size], size, function(sourceCanvas) {
+                const ctx = targetCanvas.getContext('2d');
+                ctx.clearRect(0, 0, size, size);
+                ctx.drawImage(sourceCanvas, 0, 0);
+            });
+        }
+
         function downloadIcon(canvasId, filename) {
             const canvas = document.getElementById(canvasId);
             const link = document.createElement('a');
@@ -255,10 +197,10 @@
         }
         
         function generateAllIcons() {
-            drawTabManIcon(document.getElementById('icon16'), 16);
-            drawTabManIcon(document.getElementById('icon32'), 32);
-            drawTabManIcon(document.getElementById('icon48'), 48);
-            drawTabManIcon(document.getElementById('icon128'), 128);
+            generateIcon(16);
+            generateIcon(32);
+            generateIcon(48);
+            generateIcon(128);
         }
         
         // Generate all icons when page loads

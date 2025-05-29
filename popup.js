@@ -4,6 +4,8 @@ class TabManager {
         this.tabGroups = new Map();
         this.filteredTabs = [];
         this.searchTerm = '';
+        this.selectedTabIndex = -1; // Index of currently selected tab for keyboard navigation
+        this.isNavigating = false; // Flag to track if we're in keyboard navigation mode
         this.init();
     }
 
@@ -82,9 +84,52 @@ class TabManager {
 
         // Global keydown listener to start search when typing anywhere
         document.addEventListener('keydown', (e) => {
+            // Handle keyboard navigation
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                if (this.filteredTabs.length > 0) {
+                    this.navigateTab(e.shiftKey ? -1 : 1);
+                }
+                return;
+            }
+            
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (this.isNavigating && this.selectedTabIndex >= 0) {
+                    const selectedTab = this.filteredTabs[this.selectedTabIndex];
+                    if (selectedTab) {
+                        this.switchToTab(selectedTab.id);
+                    }
+                }
+                return;
+            }
+            
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                // If we're navigating, cancel navigation
+                if (this.isNavigating) {
+                    this.cancelNavigation();
+                    return;
+                }
+                // Otherwise, clear search if search input has focus
+                if (document.activeElement === searchInput) {
+                    searchInput.value = '';
+                    this.searchTerm = '';
+                    this.filterTabs();
+                    this.renderTabs();
+                    searchInput.blur();
+                }
+                return;
+            }
+            
             // Only handle printable characters (letters, numbers, symbols)
-            // Ignore special keys like Tab, Enter, Arrow keys, etc.
+            // Ignore special keys like Arrow keys, etc.
             if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                // Cancel navigation if we start typing
+                if (this.isNavigating) {
+                    this.cancelNavigation();
+                }
+                
                 // Don't interfere if user is already typing in the search input
                 if (document.activeElement === searchInput) {
                     return;
@@ -128,9 +173,13 @@ class TabManager {
     async loadTabs() {
         try {
             // Get all tabs
-            this.tabs = await chrome.tabs.query({});
+            const allTabs = await chrome.tabs.query({});
             
-
+            // Filter out the extension tab (TabMan popup/extension pages)
+            this.tabs = allTabs.filter(tab => {
+                // Filter out chrome-extension:// URLs (our extension)
+                return !tab.url.startsWith('chrome-extension://');
+            });
 
             // Sort tabs by recently accessed (most recent first)
             this.tabs.sort((a, b) => {
@@ -206,6 +255,9 @@ class TabManager {
 
     renderTabs() {
         const container = document.getElementById('tabsContainer');
+        
+        // Reset keyboard navigation when re-rendering
+        this.cancelNavigation();
         
         if (this.filteredTabs.length === 0) {
             container.innerHTML = this.searchTerm 
@@ -355,6 +407,7 @@ class TabManager {
     createTabElement(tab) {
         const tabDiv = document.createElement('div');
         tabDiv.className = 'tab-item';
+        tabDiv.dataset.tabId = tab.id;
         if (tab.active) {
             tabDiv.classList.add('active');
         }
@@ -485,6 +538,9 @@ class TabManager {
 
     async switchToTab(tabId) {
         try {
+            // Cancel keyboard navigation when switching tabs
+            this.cancelNavigation();
+            
             await chrome.tabs.update(tabId, { active: true });
             const tab = await chrome.tabs.get(tabId);
             await chrome.windows.update(tab.windowId, { focused: true });
@@ -598,6 +654,62 @@ class TabManager {
     showError(message) {
         const container = document.getElementById('tabsContainer');
         container.innerHTML = `<div class="no-tabs"><h3>Error</h3><p>${message}</p></div>`;
+    }
+
+    navigateTab(direction) {
+        if (this.filteredTabs.length === 0) return;
+        
+        this.isNavigating = true;
+        
+        if (this.selectedTabIndex === -1) {
+            // First time navigating, start from the beginning or end
+            this.selectedTabIndex = direction > 0 ? 0 : this.filteredTabs.length - 1;
+        } else {
+            // Move to next/previous tab
+            this.selectedTabIndex += direction;
+            
+            // Wrap around
+            if (this.selectedTabIndex >= this.filteredTabs.length) {
+                this.selectedTabIndex = 0;
+            } else if (this.selectedTabIndex < 0) {
+                this.selectedTabIndex = this.filteredTabs.length - 1;
+            }
+        }
+        
+        this.updateTabSelection();
+    }
+
+    cancelNavigation() {
+        this.isNavigating = false;
+        this.selectedTabIndex = -1;
+        this.updateTabSelection();
+    }
+
+    updateTabSelection() {
+        // Remove previous selection styling
+        const previousSelected = document.querySelector('.tab-item.keyboard-selected');
+        if (previousSelected) {
+            previousSelected.classList.remove('keyboard-selected');
+        }
+        
+        // Add selection styling to current tab
+        if (this.isNavigating && this.selectedTabIndex >= 0) {
+            const tabElements = document.querySelectorAll('.tab-item');
+            let currentIndex = 0;
+            
+            // Find the tab element that corresponds to our selected filtered tab
+            for (const tabElement of tabElements) {
+                const tabId = parseInt(tabElement.dataset.tabId);
+                const filteredTab = this.filteredTabs[this.selectedTabIndex];
+                
+                if (filteredTab && tabId === filteredTab.id) {
+                    tabElement.classList.add('keyboard-selected');
+                    // Scroll into view immediately (no smooth animation for faster navigation)
+                    tabElement.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+                    break;
+                }
+            }
+        }
     }
 }
 

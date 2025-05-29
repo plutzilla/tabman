@@ -1,5 +1,65 @@
 # TabMan Changelog
 
+## Version 2.2.0 - Material Icons Redesign
+
+### 🎨 Icon System Overhaul
+
+#### **Material Design Icons**
+- Replaced custom icons with authentic Material Icons "tab" character
+- Consistent design language following Google's Material Design principles
+- Professional, clean aesthetic that matches modern browser interfaces
+- Dark orange color scheme (#E65100) for distinctive branding
+
+#### **Complete Icon Set**
+- Updated all extension icons (16x16, 32x32, 48x48, 128x128)
+- Replaced search bar icon with Material Icons design
+- Consistent visual identity across all interface elements
+- SVG format for crisp rendering at all sizes
+
+#### **Enhanced Icon Generator**
+- Updated `create_icons.html` tool for PNG export
+- SVG-to-PNG conversion with transparent backgrounds
+- Live preview of both SVG and PNG versions
+- Bulk download functionality for all icon sizes
+
+### 🔧 Technical Improvements
+
+#### **Icon Implementation**
+- Direct SVG embedding for optimal quality
+- Transparent PNG generation for compatibility
+- Proper Material Icons viewBox and path data
+- Optimized file sizes and rendering performance
+
+#### **UI Consistency**
+- Unified color scheme throughout the extension
+- Removed redundant search emoji icon
+- Cleaner, more professional interface
+- Better visual hierarchy and focus
+
+### 🎯 User Experience
+
+#### **Visual Polish**
+- More professional and trustworthy appearance
+- Better integration with Chrome's interface design
+- Improved brand recognition and consistency
+- Enhanced accessibility through better contrast
+
+#### **Interface Refinements**
+- Simplified search bar design
+- Removed visual clutter
+- Focus on content over decoration
+- Streamlined user interactions
+
+### 🛠️ Developer Tools
+
+#### **Icon Generation Workflow**
+- Updated icon generator with Material Design integration
+- Transparent PNG export capability
+- Easy color scheme modifications
+- Future-proof icon management system
+
+---
+
 ## Version 2.1.0 - UI Improvements and Enhanced Search
 
 ### 🎨 UI/UX Enhancements

@@ -300,10 +300,23 @@ body {
     transform: translateY(-1px);
 }
 
+.tab-item.keyboard-selected {
+    background: var(--chrome-color-surface-variant, #f8f9fa);
+    border-color: #1a73e8;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(26, 115, 232, 0.2);
+}
+
 @media (prefers-color-scheme: dark) {
     .tab-item:hover {
         background: var(--chrome-color-surface-variant, #3c4043);
         border-color: #8ab4f8;
+    }
+    
+    .tab-item.keyboard-selected {
+        background: var(--chrome-color-surface-variant, #3c4043);
+        border-color: #8ab4f8;
+        box-shadow: 0 2px 8px rgba(138, 180, 248, 0.3);
     }
 }
 
@@ -387,6 +400,10 @@ body {
 }
 
 .tab-item:hover .tab-actions {
+    opacity: 1;
+}
+
+.tab-item.keyboard-selected .tab-actions {
     opacity: 1;
 }
 
