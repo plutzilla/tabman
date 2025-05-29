@@ -1,5 +1,23 @@
 # TabMan Changelog
 
+## Version 2.2.1 - Layout Fix
+
+### 🐛 Bug Fixes
+
+#### **Viewport Scrollbar Issue**
+- Fixed vertical scrollbar appearing in full-page overlay
+- Corrected body height from `min-height: 100vh` to `height: 100vh`
+- Added `overflow: hidden` to body to prevent page-level scrolling
+- Maintained proper container height calculation `calc(100vh - 32px)`
+- Ensured perfect full-page fit without exceeding viewport
+
+#### **Layout Improvements**
+- Eliminated unwanted scrollbars while preserving content scrolling
+- Better viewport height utilization for overlay interface
+- Improved visual consistency across different screen sizes
+
+---
+
 ## Version 2.2.0 - Material Icons Redesign
 
 ### 🎨 Icon System Overhaul
