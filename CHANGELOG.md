@@ -1,5 +1,63 @@
 # TabMan Changelog
 
+## Version 2.1.0 - UI Improvements and Enhanced Search
+
+### 🎨 UI/UX Enhancements
+
+#### **Redesigned Header**
+- Removed "TabMan" title for cleaner interface
+- Integrated tab icon directly into search bar
+- More compact and focused design
+- Better visual hierarchy
+
+#### **Pinned Tabs Support**
+- Special "Pinned" group for pinned tabs
+- Always appears at the top of the group list
+- Distinctive golden/yellow color scheme
+- Automatic grouping of all pinned tabs
+
+#### **Enhanced Search Experience**
+- Global search activation - start typing anywhere to search
+- No need to click search bar first
+- ESC key to clear search and return to all tabs
+- Immediate search results as you type
+- Smart keyboard handling that respects input fields
+
+### 🔧 Technical Improvements
+
+#### **Search Functionality**
+- Global keydown listener for instant search activation
+- Improved keyboard event handling
+- Better focus management
+- Non-intrusive search that respects other inputs
+
+#### **Tab Organization**
+- Enhanced tab grouping logic
+- Pinned tabs get priority placement
+- Improved group ordering: Pinned → Regular Groups → Ungrouped
+- Better visual distinction between group types
+
+### 🎯 User Experience
+
+#### **Keyboard Navigation**
+- Type anywhere to start searching immediately
+- ESC to clear search and remove focus
+- Seamless transition between search and browsing
+- No interruption of existing keyboard shortcuts
+
+#### **Visual Improvements**
+- Tab icon in search bar for better branding
+- Pinned tabs clearly identified and prioritized
+- Consistent color scheme for different group types
+- Enhanced visual feedback for user actions
+
+### 🐛 Bug Fixes
+- Improved search input padding for icon placement
+- Better handling of special keyboard events
+- Enhanced group rendering order consistency
+
+---
+
 ## Version 2.0.0 - Full-Page Overlay with Screenshots
 
 ### 🎉 Major New Features

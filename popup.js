@@ -68,6 +68,41 @@ class TabManager {
             this.renderTabs();
         });
 
+        // Handle ESC key to clear search
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                searchInput.value = '';
+                this.searchTerm = '';
+                this.filterTabs();
+                this.renderTabs();
+                searchInput.blur(); // Remove focus from search input
+            }
+        });
+
+        // Global keydown listener to start search when typing anywhere
+        document.addEventListener('keydown', (e) => {
+            // Only handle printable characters (letters, numbers, symbols)
+            // Ignore special keys like Tab, Enter, Arrow keys, etc.
+            if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                // Don't interfere if user is already typing in the search input
+                if (document.activeElement === searchInput) {
+                    return;
+                }
+                
+                // Don't interfere if user is typing in any other input/textarea
+                if (document.activeElement.tagName === 'INPUT' || 
+                    document.activeElement.tagName === 'TEXTAREA' ||
+                    document.activeElement.isContentEditable) {
+                    return;
+                }
+
+                // Focus the search input and let the character be typed
+                searchInput.focus();
+                // The character will be automatically added to the input due to the focus
+            }
+        });
+
         // Auto-refresh when window/tab comes into focus
         window.addEventListener('focus', async () => {
             await this.refreshTabs();
@@ -184,8 +219,28 @@ class TabManager {
         
         container.innerHTML = '';
         
-        // Render each group
-        Object.entries(groupedTabs).forEach(([groupId, tabs]) => {
+        // Define the order of groups: pinned first, then regular groups, ungrouped last
+        const groupOrder = [];
+        
+        // Add pinned group first if it exists
+        if (groupedTabs['pinned']) {
+            groupOrder.push(['pinned', groupedTabs['pinned']]);
+        }
+        
+        // Add regular tab groups (excluding pinned and ungrouped)
+        Object.entries(groupedTabs)
+            .filter(([groupId]) => groupId !== 'pinned' && groupId !== 'ungrouped')
+            .forEach(([groupId, tabs]) => {
+                groupOrder.push([groupId, tabs]);
+            });
+        
+        // Add ungrouped last if it exists
+        if (groupedTabs['ungrouped']) {
+            groupOrder.push(['ungrouped', groupedTabs['ungrouped']]);
+        }
+        
+        // Render each group in the defined order
+        groupOrder.forEach(([groupId, tabs]) => {
             const groupElement = this.createGroupElement(groupId, tabs);
             container.appendChild(groupElement);
         });
@@ -197,7 +252,15 @@ class TabManager {
         const grouped = {};
         
         tabs.forEach(tab => {
-            const groupId = tab.groupId || 'ungrouped';
+            let groupId;
+            
+            // Check if tab is pinned first
+            if (tab.pinned) {
+                groupId = 'pinned';
+            } else {
+                groupId = tab.groupId || 'ungrouped';
+            }
+            
             if (!grouped[groupId]) {
                 grouped[groupId] = [];
             }
@@ -220,7 +283,12 @@ class TabManager {
         
         const title = document.createElement('span');
         
-        if (groupId !== 'ungrouped' && this.tabGroups.has(parseInt(groupId))) {
+        if (groupId === 'pinned') {
+            // Pinned tabs group
+            colorSpan.style.backgroundColor = '#FBC02D'; // Yellow/gold color for pinned
+            title.textContent = 'Pinned';
+            header.classList.add('pinned-header');
+        } else if (groupId !== 'ungrouped' && this.tabGroups.has(parseInt(groupId))) {
             // Real tab group
             const group = this.tabGroups.get(parseInt(groupId));
             colorSpan.style.backgroundColor = this.getGroupColor(group.color);
@@ -240,8 +308,8 @@ class TabManager {
         header.appendChild(title);
         header.appendChild(count);
         
-        // Add action buttons for real tab groups (not ungrouped)
-        if (groupId !== 'ungrouped' && this.tabGroups.has(parseInt(groupId))) {
+        // Add action buttons for real tab groups (not ungrouped or pinned)
+        if (groupId !== 'ungrouped' && groupId !== 'pinned' && this.tabGroups.has(parseInt(groupId))) {
             const groupActions = document.createElement('div');
             groupActions.className = 'group-actions';
             
