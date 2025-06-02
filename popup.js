@@ -111,15 +111,15 @@ class TabManager {
                     this.cancelNavigation();
                     return;
                 }
-                // Otherwise, clear search if search input has focus
-                if (document.activeElement === searchInput) {
+                // Always clear search when ESC is pressed (regardless of focus)
+                if (this.searchTerm) {
                     searchInput.value = '';
                     this.searchTerm = '';
                     this.filterTabs();
                     this.renderTabs();
                     searchInput.blur();
+                    return;
                 }
-                return;
             }
             
             // Only handle printable characters (letters, numbers, symbols)
