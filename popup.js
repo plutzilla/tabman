@@ -721,18 +721,27 @@ class TabManager {
             return;
         }
         
-        // Find the first tab element (most recently accessed)
-        const firstTabElement = document.querySelector('.tab-item');
-        if (firstTabElement) {
-            // Add the same visual styling as keyboard selection
-            firstTabElement.classList.add('keyboard-selected');
+        // Find the most recently accessed tab element by matching the first filtered tab
+        if (this.filteredTabs.length > 0) {
+            const mostRecentTab = this.filteredTabs[0]; // First tab is most recent (sorted by lastAccessed)
+            const tabElements = document.querySelectorAll('.tab-item');
             
-            // Scroll the tab into view
-            firstTabElement.scrollIntoView({ behavior: 'auto', block: 'nearest' });
-            
-            // Set the selected index to 0 for keyboard navigation
-            this.selectedTabIndex = 0;
-            this.isNavigating = true;
+            // Find the DOM element that corresponds to the most recent tab
+            for (const tabElement of tabElements) {
+                const tabId = parseInt(tabElement.dataset.tabId);
+                if (tabId === mostRecentTab.id) {
+                    // Add the same visual styling as keyboard selection
+                    tabElement.classList.add('keyboard-selected');
+                    
+                    // Scroll the tab into view
+                    tabElement.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+                    
+                    // Set the selected index to 0 for keyboard navigation
+                    this.selectedTabIndex = 0;
+                    this.isNavigating = true;
+                    break;
+                }
+            }
         }
     }
 }

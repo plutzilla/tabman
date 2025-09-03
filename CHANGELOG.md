@@ -1,4 +1,46 @@
+
 # TabMan Changelog
+
+## Version 2.3.0 - Auto-Focus Enhancement
+
+### 🎯 New Features
+
+#### **Auto-Focus on Most Recent Tab**
+- Automatically highlights the most recently accessed tab when extension opens
+- Visual feedback with keyboard selection styling
+- Smart positioning across all tab groups (pinned, regular, ungrouped)
+- Ready for keyboard navigation - TAB key starts from focused position
+- Non-intrusive behavior that respects search and manual navigation
+
+#### **Enhanced User Experience**
+- Immediate visual feedback showing which tab was last accessed
+- Seamless integration with existing keyboard navigation system
+- Improved workflow continuity for power users
+- Better visual hierarchy and focus management
+
+### 🔧 Technical Improvements
+
+#### **Smart Tab Selection**
+- Accurate tab matching by ID instead of DOM order
+- Proper handling of tab groups and pinned tabs
+- Consistent styling with keyboard navigation highlight
+- Performance optimized scrolling and selection
+
+#### **Navigation Integration**
+- Auto-focus sets up keyboard navigation state
+- TAB/Shift+TAB starts from the focused tab
+- Maintains existing keyboard shortcuts and behaviors
+- Respects search filters and navigation modes
+
+### 🎨 Visual Enhancements
+
+#### **Focus Indicators**
+- Same visual styling as keyboard selection
+- Clear visual feedback for most recent tab
+- Consistent highlight across all interface states
+- Improved accessibility and user guidance
+
+---
 
 ## Version 2.2.1 - Layout Fix
 
