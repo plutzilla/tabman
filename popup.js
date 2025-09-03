@@ -298,6 +298,9 @@ class TabManager {
         });
 
         this.updateTabCount();
+        
+        // Auto-focus the most recently accessed tab (first in the list)
+        this.autoFocusMostRecentTab();
     }
 
     groupTabs(tabs) {
@@ -709,6 +712,27 @@ class TabManager {
                     break;
                 }
             }
+        }
+    }
+
+    autoFocusMostRecentTab() {
+        // Only auto-focus if we're not in keyboard navigation mode and no search is active
+        if (this.isNavigating || this.searchTerm) {
+            return;
+        }
+        
+        // Find the first tab element (most recently accessed)
+        const firstTabElement = document.querySelector('.tab-item');
+        if (firstTabElement) {
+            // Add the same visual styling as keyboard selection
+            firstTabElement.classList.add('keyboard-selected');
+            
+            // Scroll the tab into view
+            firstTabElement.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+            
+            // Set the selected index to 0 for keyboard navigation
+            this.selectedTabIndex = 0;
+            this.isNavigating = true;
         }
     }
 }

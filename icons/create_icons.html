@@ -154,7 +154,7 @@
             img.onload = function() {
                 // Clear canvas (transparent background)
                 ctx.clearRect(0, 0, size, size);
-                
+            
                 // Draw the SVG image
                 ctx.drawImage(img, 0, 0, size, size);
                 
@@ -176,10 +176,10 @@
         function generateIcon(size) {
             const targetCanvas = document.getElementById(`icon${size}`);
             const svgPreview = document.getElementById(`svg${size}`);
-            
+                
             // Show SVG preview
             svgPreview.innerHTML = svgContent[size];
-            
+                
             // Convert SVG to PNG
             svgToPng(svgContent[size], size, function(sourceCanvas) {
                 const ctx = targetCanvas.getContext('2d');
@@ -187,7 +187,7 @@
                 ctx.drawImage(sourceCanvas, 0, 0);
             });
         }
-
+        
         function downloadIcon(canvasId, filename) {
             const canvas = document.getElementById(canvasId);
             const link = document.createElement('a');
