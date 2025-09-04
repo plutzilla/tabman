@@ -19,6 +19,7 @@ A powerful Chrome extension with a full-page overlay interface featuring tab scr
 ## 📸 Screenshots
 
 The extension features a modern, intuitive interface with:
+
 - Clean tab listing with favicons and titles
 - Search functionality with highlighting
 - Visual tab grouping with colors
@@ -41,17 +42,20 @@ The extension features a modern, intuitive interface with:
 ## 🎯 Usage
 
 ### Opening TabMan
+
 - **Extension Icon**: Click the TabMan icon in your Chrome toolbar
 - **Opens in New Tab**: TabMan opens in a dedicated browser tab
 - **Reuse**: Click the icon again to return to existing TabMan tab
 
 ### Navigation & Search
+
 - **Search**: Type in the search box to filter tabs by title or URL in real-time
 - **Browse**: Scroll through the responsive grid of tab cards
 - **Switch Tabs**: Click on any tab card to navigate to it (TabMan stays open)
 - **Recent First**: Tabs are automatically sorted by recent activity
 
 ### Tab Management
+
 - **Close Individual Tabs**: Hover over a tab card and click the red × button
 - **Close Duplicates**: Click "Close Duplicates" to remove tabs with identical URLs
 - **Group by Domain**: Click "Group by Domain" to organize tabs by website
@@ -96,23 +100,27 @@ tabman/
 ## 🎨 Features in Detail
 
 ### Tab Grouping
+
 - Displays existing tab groups with their colors and titles
 - Shows ungrouped tabs separately
 - Maintains group organization in the interface
 
 ### Search & Filter
+
 - Real-time search as you type
 - Searches both tab titles and URLs
 - Highlights matching text in results
 - Shows filtered count vs total tabs
 
 ### Tab Actions
+
 - **Switch**: Click any tab to navigate to it
 - **Close**: Individual tab closure with confirmation
 - **Bulk Actions**: Close all duplicates at once
 - **Auto-Group**: Group tabs by domain automatically
 
 ### UI/UX Features
+
 - **Responsive Design**: Works well in the extension popup
 - **Smooth Animations**: Hover effects and transitions
 - **Visual Feedback**: Active tab highlighting
@@ -170,4 +178,4 @@ If you encounter any issues or have suggestions, please create an issue in the r
 
 ---
 
-**TabMan** - Making tab management simple and efficient! 🚀 
+**TabMan** - Making tab management simple and efficient! 🚀
