@@ -34,7 +34,7 @@ If you want to convert the SVG icons to PNG format for better compatibility:
 ```json
 "icons": {
   "16": "icons/icon16.png",
-  "32": "icons/icon32.png", 
+  "32": "icons/icon32.png",
   "48": "icons/icon48.png",
   "128": "icons/icon128.png"
 }
@@ -88,21 +88,25 @@ inkscape -w 128 -h 128 icons/icon128.svg -o icons/icon128.png
 ## Troubleshooting
 
 ### Extension Not Loading
+
 - Make sure you selected the correct folder (containing `manifest.json`)
 - Check that Developer Mode is enabled
 - Look for error messages in the extensions page
 
 ### Icons Not Showing
+
 - The extension works fine with SVG icons
 - If you need PNG icons, follow the icon generation steps above
 - The extension functionality is not affected by missing icons
 
 ### Permissions Errors
+
 - Make sure the extension has the required permissions:
   - `tabs`: Access to tab information
   - `tabGroups`: Access to tab groups (Chrome 88+)
 
 ### Features Not Working
+
 - **Tab Groups**: Requires Chrome 88 or later
 - **Search**: Should work immediately
 - **Tab Switching**: Requires `tabs` permission
@@ -119,6 +123,7 @@ inkscape -w 128 -h 128 icons/icon128.svg -o icons/icon128.png
 ## Development Mode Limitations
 
 When running in developer mode:
+
 - Chrome may show warnings about the extension
 - You'll need to reload the extension after making changes
 - The extension won't auto-update
@@ -138,6 +143,7 @@ To publish this extension:
 ## Security Notes
 
 This extension:
+
 - Only requests minimal necessary permissions
 - Does not collect or transmit any user data
 - Runs locally in your browser
@@ -146,6 +152,7 @@ This extension:
 ## Getting Help
 
 If you encounter issues:
+
 1. Check the browser console for error messages
 2. Try disabling and re-enabling the extension
 3. Reload the extension from the extensions page
