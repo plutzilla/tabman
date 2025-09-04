@@ -157,4 +157,4 @@ If you encounter issues:
 2. Try disabling and re-enabling the extension
 3. Reload the extension from the extensions page
 4. Check that you're using a compatible Chrome version
-5. Report issues in the repository if available 
+5. Report issues in the repository if available
